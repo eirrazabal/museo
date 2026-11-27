@@ -24,7 +24,7 @@ setInterval(()=>{
   document.getElementById('c-titulo').textContent=o.t;
   document.getElementById('c-autor').textContent=o.a;
   document.getElementById('c-texto').textContent=o.x;
-  document.getElementById('c-hint').textContent=(o.url?'Clic en el cuadro para jugar':o.v?'Clic en el cuadro para ver el video':'Clic en el cuadro para ampliarlo');
+  document.getElementById('c-hint').textContent=o.v?'Clic en el cuadro para ver el video':'Clic en el cuadro para ampliarlo';
   cart.hidden=false;
 },150);
 
@@ -36,14 +36,14 @@ const tImg=document.getElementById('t-img'),tVid=document.getElementById('t-vid'
 let abierto=false,actualVisor=-1;
 function mostrarImagen(i){
   vMedio.textContent='';
-  const c=cuadroV(ampliada(PIEZAS[i]),i,(PIEZAS[i].e==='video'||PIEZAS[i].e==='juego')?2:2.5);c.setAttribute('role','img');c.setAttribute('aria-label',PIEZAS[i].t);
+  const c=cuadroV(ampliada(PIEZAS[i]),i,PIEZAS[i].e==='video'?2:2.5);c.setAttribute('role','img');c.setAttribute('aria-label',PIEZAS[i].t);
   vMedio.appendChild(c);tImg.setAttribute('aria-pressed','true');tVid.setAttribute('aria-pressed','false');
 }
 function mostrarVideo(i){
-  if(!PIEZAS[i].embed&&!PIEZAS[i].v){mostrarBloqueo(i);return}
+  if(!PIEZAS[i].v){mostrarBloqueo(i);return}
   vMedio.textContent='';
   const f=document.createElement('iframe');
-  f.src=PIEZAS[i].embed||('https://www.youtube-nocookie.com/embed/'+PIEZAS[i].v+'?rel=0&autoplay=1');
+  f.src='https://www.youtube-nocookie.com/embed/'+PIEZAS[i].v+'?rel=0&autoplay=1';
   f.title=PIEZAS[i].vt||'Video';f.allow='autoplay; encrypted-media; picture-in-picture; fullscreen';
   f.allowFullscreen=true;f.referrerPolicy='strict-origin-when-cross-origin';
   vMedio.appendChild(f);tImg.setAttribute('aria-pressed','false');tVid.setAttribute('aria-pressed','true');
@@ -73,9 +73,9 @@ function abrir(i){
   document.getElementById('v-titulo').textContent=o.t;
   document.getElementById('v-autor').textContent=o.a;
   document.getElementById('v-texto').textContent=o.d||o.x;
-  vTabs.hidden=true;vVt.hidden=true;vYt.hidden=!(o.v||o.url);
-  if(o.v||o.url){vYt.href=o.url||('https://www.youtube.com/watch?v='+o.v);vYt.textContent=o.url?'¿No carga? Jugar en itch.io':'¿No carga? Abrir el video en YouTube'}
-  ((o.v||o.url)?mostrarVideo:mostrarImagen)(i);visor.hidden=false;controles(false);
+  vTabs.hidden=true;vVt.hidden=true;vYt.hidden=!o.v;
+  if(o.v){vYt.href='https://www.youtube.com/watch?v='+o.v;vYt.textContent='¿No carga? Abrir el video en YouTube'}
+  (o.v?mostrarVideo:mostrarImagen)(i);visor.hidden=false;controles(false);
   document.getElementById('v-cerrar').focus();
 }
 function cerrar(){vMedio.textContent='';visor.classList.remove('v-juego');visor.hidden=true;abierto=false;controles(true)}
@@ -87,16 +87,16 @@ document.addEventListener('keydown',e=>{if(e.key==='Escape'&&abierto)cerrar()});
 
 function mostrarBloqueo(i){
   vMedio.textContent='';const a=document.createElement('a');
-  const url=i===-2?JUEGO_URL:(PIEZAS[i].url||('https://www.youtube.com/watch?v='+PIEZAS[i].v));
+  const url=i===-2?JUEGO_URL:'https://www.youtube.com/watch?v='+PIEZAS[i].v;
   a.href=url;a.target='_blank';a.rel='noopener noreferrer';a.className='v-poster';
   if(i===-2){
     const div=document.createElement('div');div.style.cssText='padding:3rem 1.5rem;text-align:center;background:#10161a;color:#fff';
     div.innerHTML='<p style="font-size:1.25rem;margin:0 0 1rem">No se pudo incrustar el juego aquí.</p>';
     a.appendChild(div);
   }else{
-    a.appendChild(cuadroV(ampliada(PIEZAS[i]),i,(PIEZAS[i].e==='video'||PIEZAS[i].e==='juego')?2:2.5));
+    a.appendChild(cuadroV(ampliada(PIEZAS[i]),i,2));
   }
-  const sp=document.createElement('span');sp.textContent=i===-2?'Abrir juego en museo.goyasurubi.com':(PIEZAS[i].url?'Jugar en itch.io':'Ver el video en YouTube');a.appendChild(sp);vMedio.appendChild(a);
+  const sp=document.createElement('span');sp.textContent=i===-2?'Abrir juego en museo.goyasurubi.com':'Ver el video en YouTube';a.appendChild(sp);vMedio.appendChild(a);
 }
 document.addEventListener('securitypolicyviolation',e=>{if(abierto&&(actualVisor===-2||(actualVisor>=0&&(PIEZAS[actualVisor].v||PIEZAS[actualVisor].url)))&&/frame|child|default/.test(e.violatedDirective))mostrarBloqueo(actualVisor)});
 function rehacer(l){pintarV(l.cv,l.o,lista.indexOf(l),1);const m=l.lienzo.getObject3D('mesh');if(m&&m.material&&m.material.map)m.material.map.needsUpdate=true}

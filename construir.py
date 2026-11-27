@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """construir.py: junta la carpeta en archivos HTML únicos, dentro de dist/ y docs/index.html para GitHub Pages."""
-import re, os
+import re, os, base64
 
 base = os.path.dirname(os.path.abspath(__file__))
 
@@ -10,6 +10,9 @@ def leer(ruta):
 
 def armar(liviana):
     h = leer('index.html')
+    with open(os.path.join(base, 'assets/experiencia-color.png'), 'rb') as f:
+        logo = base64.b64encode(f.read()).decode('ascii')
+    h = h.replace('src="assets/experiencia-color.png"', 'src="data:image/png;base64,' + logo + '"')
     h = re.sub(r'<link rel="stylesheet" href="(css/[^"]+)">', lambda m: '<style>\n' + leer(m.group(1)) + '\n</style>', h)
     def js(m):
         ruta = m.group(1)

@@ -1,8 +1,7 @@
 /* Lista de piezas del museo, en el orden del recorrido (el número de la placa es la posición + 1).
-   e: 'imagen' | 'foto' | 'video' | 'juego'.  px, pz: posición en la sala; ry: giro (0 norte, 180 sur, 90 oeste, -90 este).
-   Campos opcionales: v (video de YouTube), url/embed (juego), img (clave en IMG), W (ancho en metros), y, mural, print, full. */
+   e: 'imagen' | 'foto' | 'video'. px, pz: posición en la sala; ry: giro (0 norte, 180 sur, 90 oeste, -90 este).
+   Campos opcionales: v (video de YouTube), img (clave en IMG), W (ancho en metros), y, mural, print, full. */
 const PIEZAS=[
- {"t": "Surubí 45", "a": "Videojuego, romerokarin (itch.io)", "x": "Videojuego publicado en itch.io por romerokarin.", "e": "juego", "url": "https://romerokarin.itch.io/surubi45", "embed": "", "ar": 1.6, "W": 1.9, "px": -2.8, "pz": 5.47, "ry": 180},
  {"t": "The SURUBÍ: Is it the GREATEST freshwater HUNTER?", "a": "Minidocumental, Pescando con Sergio, 2026", "x": "Recorre la leyenda guaraní del surubí, su biología, la Fiesta Nacional del Surubí en Goya y la pesca con devolución.", "e": "video", "v": "A9RAaBpy4-E", "ar": 1.6, "W": 1.9, "px": -5.2, "pz": 5.47, "ry": 180},
  {"t": "El río al atardecer", "a": "El río", "x": "Atardecer sobre el río, imagen de la propuesta museográfica del Museo del Surubí.", "e": "imagen", "img": "rio_mural", "full": {"img": "rio", "ar": 0.7505882352941177}, "ar": 3.235294117647059, "W": 11, "mural": true, "tw": 2048, "px": -10.5, "pz": 0, "ry": 90},
  {"t": "La primera pesca del surubí", "a": "Fotografía de archivo", "x": "Registro fotográfico de la primera pesca del surubí.", "e": "foto", "ar": 1.3333333333333333, "W": 1.8, "px": -8.8, "pz": -5.47, "ry": 0},
