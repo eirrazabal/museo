@@ -27,6 +27,14 @@
 </aside>
 <button id="avanzar" aria-label="Mantené apretado para avanzar">Avanzar</button>
 <button id="sonido" hidden aria-pressed="true">Sonido: sí</button>
+<div id="tiempo-ui" role="group" aria-label="Momento del día">
+  <span id="tiempo-reloj" aria-live="polite"></span>
+  <button type="button" data-modo="auto" aria-pressed="true">Auto</button>
+  <button type="button" data-modo="amanecer" aria-pressed="false">1·Amanecer</button>
+  <button type="button" data-modo="dia" aria-pressed="false">2·Día</button>
+  <button type="button" data-modo="atardecer" aria-pressed="false">3·Atardecer</button>
+  <button type="button" data-modo="noche" aria-pressed="false">4·Noche</button>
+</div>
 
 <div id="visor" hidden role="dialog" aria-modal="true" aria-labelledby="v-titulo">
   <div class="v-caja">

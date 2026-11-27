@@ -186,19 +186,9 @@ const b=document.getElementById('avanzar');
     if(ui)ui.querySelectorAll('button').forEach(bt=>bt.setAttribute('aria-pressed',String(bt.dataset.modo===modo)));
   }
   if(ui)ui.addEventListener('click',e=>{const bt=e.target.closest('button[data-modo]');if(bt)setModoTiempo(bt.dataset.modo)});
-  const CLIMAS={F1:'auto',F2:'soleado',F3:'nublado',F4:'lluvioso'};
-  const cUi=document.getElementById('clima-ui');
-  function setModoClima(modo){
-    if(!/^(auto|soleado|nublado|lluvioso)$/.test(modo))return;
-    window.__climaModo=modo;
-    if(cUi)cUi.querySelectorAll('button').forEach(bt=>bt.setAttribute('aria-pressed',String(bt.dataset.clima===modo)));
-    if(window.__actualizarClimaUI)window.__actualizarClimaUI();
-  }
-  if(cUi)cUi.addEventListener('click',e=>{const bt=e.target.closest('button[data-clima]');if(bt)setModoClima(bt.dataset.clima)});
   document.addEventListener('keydown',e=>{
     if(abierto||e.altKey||e.ctrlKey||e.metaKey)return;
     if(e.target&&/INPUT|TEXTAREA|SELECT/.test(e.target.tagName))return;
-    if(e.key in CLIMAS){e.preventDefault();setModoClima(CLIMAS[e.key]);return}
     const m=TECLAS[e.key];if(m)setModoTiempo(m);
   });
  }

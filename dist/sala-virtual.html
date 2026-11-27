@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="es">
 <head>
 <meta charset="utf-8">
@@ -45,14 +45,12 @@ html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);font-family:
 #v-medio .v-poster span{position:absolute;right:1rem;bottom:1rem;background:var(--brass);color:#fff;padding:.55rem 1.1rem;font-weight:600}
 #cartela .hint{margin:.45rem 0 0;font-size:.85rem;color:var(--brass)}
 #sonido{position:fixed;z-index:10;left:1rem;top:calc(1rem + env(safe-area-inset-top,0px));font:inherit;font-size:.85rem;padding:.35rem .8rem;background:var(--panel);color:var(--ink);border:1px solid var(--brass);cursor:pointer}
-#sonido:focus-visible,#tiempo-ui button:focus-visible,#clima-ui button:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
-#tiempo-ui,#clima-ui{position:fixed;z-index:10;right:1rem;display:flex;flex-wrap:wrap;align-items:center;gap:.25rem;padding:.28rem .4rem;background:var(--panel);color:var(--ink);border:1px solid var(--brass);font-size:.78rem}
-#tiempo-ui{top:calc(1rem + env(safe-area-inset-top,0px))}
-#clima-ui{top:calc(3.35rem + env(safe-area-inset-top,0px))}
-#tiempo-reloj,#clima-estado{padding:0 .35rem;color:var(--muted);font-variant-numeric:tabular-nums}
-#tiempo-ui button,#clima-ui button{font:inherit;font-size:.76rem;padding:.22rem .48rem;border:1px solid transparent;background:transparent;color:var(--ink);cursor:pointer}
-#tiempo-ui button[aria-pressed="true"],#clima-ui button[aria-pressed="true"]{background:var(--brass);color:#fff}
-@media (max-width:640px){#tiempo-ui,#clima-ui{max-width:calc(100% - 7.5rem)}#tiempo-reloj{display:none}}
+#tiempo-ui{position:fixed;z-index:10;top:calc(1rem + env(safe-area-inset-top,0px));right:1rem;display:flex;flex-wrap:wrap;align-items:center;gap:.25rem;padding:.28rem .4rem;background:var(--panel);color:var(--ink);border:1px solid var(--brass);font-size:.78rem}
+#tiempo-reloj{padding:0 .35rem;color:var(--muted);font-variant-numeric:tabular-nums}
+#sonido:focus-visible,#tiempo-ui button:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+#tiempo-ui button{font:inherit;font-size:.76rem;padding:.22rem .48rem;border:1px solid transparent;background:transparent;color:var(--ink);cursor:pointer}
+#tiempo-ui button[aria-pressed="true"]{background:var(--brass);color:#fff}
+@media (max-width:640px){#tiempo-ui{max-width:calc(100% - 7.5rem)}#tiempo-reloj{display:none}}
 [hidden]{display:none!important}
 
 </style>
@@ -77,11 +75,7 @@ const MUSEO={
   velocidad:2.6,                                           // m/s con el botón Avanzar
   colores:{s1:'#0f4c6a',s2:'#8a5a2b',s3:'#2f5f52',s4:'#6a3347',b:'#a8742f',verde:'#cbd8c3'},
   tintes:{s1:'#e4edf1',s2:'#f4eadc',s3:'#e3ece7',s4:'#f1e2e6',b:'#efdfc3'},
-  audio:{distMax:3,distMin:1,gainBosque:.3,gainRio:.3},    // el sonido empieza a oírse a distMax y llega al máximo a distMin
-  clima:{
-    url:'https://api.open-meteo.com/v1/forecast?latitude=-29.14&longitude=-59.26&current=weather_code,is_day',
-    intervaloMs:900000                                     // actualización cada 15 minutos
-  }
+  audio:{distMax:3,distMin:1,gainBosque:.3,gainRio:.3}     // el sonido empieza a oírse a distMax y llega al máximo a distMin
 };
 
 </script>
@@ -168,19 +162,13 @@ AFRAME.registerComponent('mover',{
 <button id="sonido" hidden aria-pressed="true">Sonido: sí</button>
 <div id="tiempo-ui" role="group" aria-label="Momento del día">
   <span id="tiempo-reloj" aria-live="polite"></span>
-  <button type="button" data-modo="auto" aria-pressed="true" title="Hora real (tecla 0)">Auto</button>
-  <button type="button" data-modo="amanecer" aria-pressed="false" title="Amanecer (tecla 1)">1·Amanecer</button>
-  <button type="button" data-modo="dia" aria-pressed="false" title="Día (tecla 2)">2·Día</button>
-  <button type="button" data-modo="atardecer" aria-pressed="false" title="Atardecer (tecla 3)">3·Atardecer</button>
-  <button type="button" data-modo="noche" aria-pressed="false" title="Noche (tecla 4)">4·Noche</button>
+  <button type="button" data-modo="auto" aria-pressed="true">Auto</button>
+  <button type="button" data-modo="amanecer" aria-pressed="false">1·Amanecer</button>
+  <button type="button" data-modo="dia" aria-pressed="false">2·Día</button>
+  <button type="button" data-modo="atardecer" aria-pressed="false">3·Atardecer</button>
+  <button type="button" data-modo="noche" aria-pressed="false">4·Noche</button>
 </div>
-<div id="clima-ui" role="group" aria-label="Clima">
-  <span id="clima-estado" aria-live="polite">Goya: Soleado</span>
-  <button type="button" data-clima="auto" aria-pressed="true" title="Clima real de Goya (F1)">F1·Goya</button>
-  <button type="button" data-clima="soleado" aria-pressed="false" title="Soleado (F2)">F2·Soleado</button>
-  <button type="button" data-clima="nublado" aria-pressed="false" title="Nublado (F3)">F3·Nublado</button>
-  <button type="button" data-clima="lluvioso" aria-pressed="false" title="Lluvioso (F4)">F4·Lluvioso</button>
-</div>
+
 <div id="visor" hidden role="dialog" aria-modal="true" aria-labelledby="v-titulo">
   <div class="v-caja">
     <button id="v-cerrar" aria-label="Cerrar">×</button>
@@ -268,6 +256,7 @@ plano({position:'10.5 1.7 -2.75',rotation:'0 -90 0',width:5.5,height:H},{src:yes
 plano({position:`-5.9 ${H/2} 5.5`,rotation:'0 180 0',width:9.2,height:H},{src:yeso('#f5f5f5'),repeat:'4.6 1.7',roughness:1});
 plano({position:`5.9 ${H/2} 5.5`,rotation:'0 180 0',width:9.2,height:H},{src:yeso('#f5f5f5'),repeat:'4.6 1.7',roughness:1});
 plano({position:`0 2.95 5.5`,rotation:'0 180 0',width:2.6,height:.9},{src:yeso('#f5f5f5'),repeat:'1.3 .45',roughness:1});
+
 
 
 [[0,-5.47,21,.05],[ -5.9,5.47,9.2,.05],[5.9,5.47,9.2,.05]].forEach(b=>E('a-box',{position:`${b[0]} .09 ${b[1]}`,width:b[2],height:.18,depth:.05,color:'#d4d4d1'}));
@@ -508,37 +497,23 @@ const CIELO_SH={
   uSolCol:{value:new AFRAME.THREE.Color('#ffbe78')},
   uSolGlow:{value:.65},
   uNubeCol:{value:new AFRAME.THREE.Color('#ffc49a')},
-  uNubeOp:{value:.35},
-  uNublado:{value:0},
-  uLluvioso:{value:0},
-  uTiempo:{value:0}
+  uNubeOp:{value:.35}
 };
 {const T=AFRAME.THREE,cieloEl=E('a-entity',{});
  const cieloMat=new T.ShaderMaterial({
    uniforms:CIELO_SH,side:T.BackSide,depthWrite:false,fog:false,
    vertexShader:'varying vec3 vDir;void main(){vDir=normalize(position);gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}',
    fragmentShader:`uniform vec3 uCenit,uMedio,uHoriz,uNadir,uSolDir,uSolCol,uNubeCol;
-     uniform float uSolGlow,uNubeOp,uNublado,uLluvioso,uTiempo;varying vec3 vDir;
+     uniform float uSolGlow,uNubeOp;varying vec3 vDir;
      void main(){
        vec3 d=normalize(vDir);float y=d.y;
        vec3 col=y<0.0?mix(uHoriz,uNadir,clamp(-y*4.5,0.0,1.0)):(y<0.28?mix(uHoriz,uMedio,smoothstep(0.0,0.28,y)):mix(uMedio,uCenit,smoothstep(0.28,0.92,y)));
        float ds=max(dot(d,normalize(uSolDir)),0.0);
        col+=uSolCol*(pow(ds,7.0)*0.42+pow(ds,72.0)*0.55)*uSolGlow;
-       float a=atan(d.z,d.x)+uTiempo*0.015;
+       float a=atan(d.z,d.x);
        float n=sin(a*3.0+y*11.0)*0.5+sin(a*7.0-y*17.0+1.4)*0.3+sin(a*13.0+y*23.0)*0.2;
        float banda=smoothstep(0.04,0.18,y)*(1.0-smoothstep(0.22,0.52,y))*smoothstep(0.12,0.75,n);
        col=mix(col,uNubeCol,banda*uNubeOp);
-       if(uNublado>0.001||uLluvioso>0.001){
-         float lum=clamp(dot(uCenit+uHoriz,vec3(0.28)),0.10,1.0);
-         float n2=sin(a*2.0+y*8.0+uTiempo*0.04)*0.45+sin(a*5.0-y*13.0-uTiempo*0.03)*0.35+sin(a*11.0+y*21.0)*0.2;
-         float cub=smoothstep(-0.04,0.28,y)*smoothstep(-0.35,0.65,n2);
-         vec3 cieloGris=vec3(0.56,0.60,0.64)*lum;
-         vec3 nubeGris=mix(uNubeCol,vec3(0.45,0.49,0.53)*lum,0.75);
-         col=mix(col,cieloGris,uNublado*0.48);
-         col=mix(col,nubeGris,cub*uNublado*0.62);
-         vec3 tormenta=vec3(0.26,0.29,0.33)*lum;
-         col=mix(col,tormenta,uLluvioso*(0.52+0.32*cub));
-       }
        gl_FragColor=vec4(col,1.0);
      }`
  });
@@ -558,7 +533,6 @@ const ESTRELLAS_MAT=(()=>{
   const e=E('a-entity',{});e.setObject3D('mesh',new T.Points(g,m));
   return m;
 })();
-
 const BRILLO=lienzo(256,256,(g,w,h)=>{const q=g.createRadialGradient(128,128,2,128,128,128);q.addColorStop(0,'rgba(255,255,255,1)');q.addColorStop(.25,'rgba(255,255,255,.58)');q.addColorStop(1,'rgba(255,255,255,0)');g.fillStyle=q;g.fillRect(0,0,w,h)});
 const SOL_GRP=E('a-entity',{position:'-420 95 0'});
 const SOL_HALO1=E('a-circle',{radius:125,position:'0 0 2'},SOL_GRP);SOL_HALO1.setAttribute('material',{shader:'flat',src:BRILLO,color:'#ffbe78',transparent:true,blending:'additive',depthWrite:false,fog:false});
@@ -1195,7 +1169,8 @@ capaArb(66,JUNCOS,ARC0,ARC1,1,'#e6d6c4');
      if(this.skyEl){const sm=this.skyEl.getObject3D('mesh');if(sm&&sm.material)sm.material.color.copy(CIELO_SH.uCenit.value)}
 
      const agM=AGUA_EL.getObject3D('mesh');if(agM)agM.material.color.copy(cAg);
-     const brM=BRUMA_EL.getObject3D('mesh');if(brM)brM.material.color.copy(cFog);
+     const brM=BRUMA_EL.getObject3D('mesh');
+     if(brM)brM.material.color.copy(cFog);
      const rfM=REFLEJO_EL.getObject3D('mesh');
      if(rfM){rfM.material.color.copy(cRf);rfM.material.opacity=st.ro}
      REFLEJO_PIV.object3D.rotation.y=Math.atan2(az,-ax);
@@ -1478,19 +1453,9 @@ const b=document.getElementById('avanzar');
     if(ui)ui.querySelectorAll('button').forEach(bt=>bt.setAttribute('aria-pressed',String(bt.dataset.modo===modo)));
   }
   if(ui)ui.addEventListener('click',e=>{const bt=e.target.closest('button[data-modo]');if(bt)setModoTiempo(bt.dataset.modo)});
-  const CLIMAS={F1:'auto',F2:'soleado',F3:'nublado',F4:'lluvioso'};
-  const cUi=document.getElementById('clima-ui');
-  function setModoClima(modo){
-    if(!/^(auto|soleado|nublado|lluvioso)$/.test(modo))return;
-    window.__climaModo=modo;
-    if(cUi)cUi.querySelectorAll('button').forEach(bt=>bt.setAttribute('aria-pressed',String(bt.dataset.clima===modo)));
-    if(window.__actualizarClimaUI)window.__actualizarClimaUI();
-  }
-  if(cUi)cUi.addEventListener('click',e=>{const bt=e.target.closest('button[data-clima]');if(bt)setModoClima(bt.dataset.clima)});
   document.addEventListener('keydown',e=>{
     if(abierto||e.altKey||e.ctrlKey||e.metaKey)return;
     if(e.target&&/INPUT|TEXTAREA|SELECT/.test(e.target.tagName))return;
-    if(e.key in CLIMAS){e.preventDefault();setModoClima(CLIMAS[e.key]);return}
     const m=TECLAS[e.key];if(m)setModoTiempo(m);
   });
  }

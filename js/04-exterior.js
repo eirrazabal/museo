@@ -17,37 +17,23 @@ const CIELO_SH={
   uSolCol:{value:new AFRAME.THREE.Color('#ffbe78')},
   uSolGlow:{value:.65},
   uNubeCol:{value:new AFRAME.THREE.Color('#ffc49a')},
-  uNubeOp:{value:.35},
-  uNublado:{value:0},
-  uLluvioso:{value:0},
-  uTiempo:{value:0}
+  uNubeOp:{value:.35}
 };
 {const T=AFRAME.THREE,cieloEl=E('a-entity',{});
  const cieloMat=new T.ShaderMaterial({
    uniforms:CIELO_SH,side:T.BackSide,depthWrite:false,fog:false,
    vertexShader:'varying vec3 vDir;void main(){vDir=normalize(position);gl_Position=projectionMatrix*modelViewMatrix*vec4(position,1.0);}',
    fragmentShader:`uniform vec3 uCenit,uMedio,uHoriz,uNadir,uSolDir,uSolCol,uNubeCol;
-     uniform float uSolGlow,uNubeOp,uNublado,uLluvioso,uTiempo;varying vec3 vDir;
+     uniform float uSolGlow,uNubeOp;varying vec3 vDir;
      void main(){
        vec3 d=normalize(vDir);float y=d.y;
        vec3 col=y<0.0?mix(uHoriz,uNadir,clamp(-y*4.5,0.0,1.0)):(y<0.28?mix(uHoriz,uMedio,smoothstep(0.0,0.28,y)):mix(uMedio,uCenit,smoothstep(0.28,0.92,y)));
        float ds=max(dot(d,normalize(uSolDir)),0.0);
        col+=uSolCol*(pow(ds,7.0)*0.42+pow(ds,72.0)*0.55)*uSolGlow;
-       float a=atan(d.z,d.x)+uTiempo*0.015;
+       float a=atan(d.z,d.x);
        float n=sin(a*3.0+y*11.0)*0.5+sin(a*7.0-y*17.0+1.4)*0.3+sin(a*13.0+y*23.0)*0.2;
        float banda=smoothstep(0.04,0.18,y)*(1.0-smoothstep(0.22,0.52,y))*smoothstep(0.12,0.75,n);
        col=mix(col,uNubeCol,banda*uNubeOp);
-       if(uNublado>0.001||uLluvioso>0.001){
-         float lum=clamp(dot(uCenit+uHoriz,vec3(0.28)),0.10,1.0);
-         float n2=sin(a*2.0+y*8.0+uTiempo*0.04)*0.45+sin(a*5.0-y*13.0-uTiempo*0.03)*0.35+sin(a*11.0+y*21.0)*0.2;
-         float cub=smoothstep(-0.04,0.28,y)*smoothstep(-0.35,0.65,n2);
-         vec3 cieloGris=vec3(0.56,0.60,0.64)*lum;
-         vec3 nubeGris=mix(uNubeCol,vec3(0.45,0.49,0.53)*lum,0.75);
-         col=mix(col,cieloGris,uNublado*0.48);
-         col=mix(col,nubeGris,cub*uNublado*0.62);
-         vec3 tormenta=vec3(0.26,0.29,0.33)*lum;
-         col=mix(col,tormenta,uLluvioso*(0.52+0.32*cub));
-       }
        gl_FragColor=vec4(col,1.0);
      }`
  });
@@ -67,7 +53,6 @@ const ESTRELLAS_MAT=(()=>{
   const e=E('a-entity',{});e.setObject3D('mesh',new T.Points(g,m));
   return m;
 })();
-
 const BRILLO=lienzo(256,256,(g,w,h)=>{const q=g.createRadialGradient(128,128,2,128,128,128);q.addColorStop(0,'rgba(255,255,255,1)');q.addColorStop(.25,'rgba(255,255,255,.58)');q.addColorStop(1,'rgba(255,255,255,0)');g.fillStyle=q;g.fillRect(0,0,w,h)});
 const SOL_GRP=E('a-entity',{position:'-420 95 0'});
 const SOL_HALO1=E('a-circle',{radius:125,position:'0 0 2'},SOL_GRP);SOL_HALO1.setAttribute('material',{shader:'flat',src:BRILLO,color:'#ffbe78',transparent:true,blending:'additive',depthWrite:false,fog:false});
@@ -704,7 +689,8 @@ capaArb(66,JUNCOS,ARC0,ARC1,1,'#e6d6c4');
      if(this.skyEl){const sm=this.skyEl.getObject3D('mesh');if(sm&&sm.material)sm.material.color.copy(CIELO_SH.uCenit.value)}
 
      const agM=AGUA_EL.getObject3D('mesh');if(agM)agM.material.color.copy(cAg);
-     const brM=BRUMA_EL.getObject3D('mesh');if(brM)brM.material.color.copy(cFog);
+     const brM=BRUMA_EL.getObject3D('mesh');
+     if(brM)brM.material.color.copy(cFog);
      const rfM=REFLEJO_EL.getObject3D('mesh');
      if(rfM){rfM.material.color.copy(cRf);rfM.material.opacity=st.ro}
      REFLEJO_PIV.object3D.rotation.y=Math.atan2(az,-ax);

@@ -14,9 +14,5 @@ const MUSEO={
   velocidad:2.6,                                           // m/s con el botón Avanzar
   colores:{s1:'#0f4c6a',s2:'#8a5a2b',s3:'#2f5f52',s4:'#6a3347',b:'#a8742f',verde:'#cbd8c3'},
   tintes:{s1:'#e4edf1',s2:'#f4eadc',s3:'#e3ece7',s4:'#f1e2e6',b:'#efdfc3'},
-  audio:{distMax:3,distMin:1,gainBosque:.3,gainRio:.3},    // el sonido empieza a oírse a distMax y llega al máximo a distMin
-  clima:{
-    url:'https://api.open-meteo.com/v1/forecast?latitude=-29.14&longitude=-59.26&current=weather_code,is_day',
-    intervaloMs:900000                                     // actualización cada 15 minutos
-  }
+  audio:{distMax:3,distMin:1,gainBosque:.3,gainRio:.3}     // el sonido empieza a oírse a distMax y llega al máximo a distMin
 };
