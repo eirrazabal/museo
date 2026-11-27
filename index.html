@@ -1,0 +1,63 @@
+﻿<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Museo del Surubí | Sala virtual</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,600;1,400&family=Lato:wght@300;400&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="css/estilos.css">
+<script src="vendor/aframe-1.5.0.min.js"></script>
+<script src="js/00-config.js"></script>
+<script src="js/01-nucleo.js"></script>
+
+</head>
+<body>
+<div id="ayuda" role="dialog" aria-labelledby="ayuda-t">
+  <h1 id="ayuda-t">Experiencia Surubí</h1>
+  <p>Caminá con W A S D o con las flechas y arrastrá para mirar alrededor. Acercate a cada obra para leer su cartela y hacé clic en un cuadro para verlo en grande. La puerta de entrada lleva al balcón exterior, que rodea el museo. En el celular, mantené apretado el botón Avanzar.</p>
+  <p id="aviso" hidden style="color:#b3261e;font-weight:600"></p>
+  <button id="entrar">Entrar a la sala</button>
+</div>
+<aside id="cartela" hidden aria-live="polite">
+  <h2 id="c-titulo"></h2>
+  <p class="autor" id="c-autor"></p>
+  <p class="texto" id="c-texto"></p>
+  <p class="hint" id="c-hint"></p>
+</aside>
+<button id="avanzar" aria-label="Mantené apretado para avanzar">Avanzar</button>
+<button id="sonido" hidden aria-pressed="true">Sonido: sí</button>
+
+<div id="visor" hidden role="dialog" aria-modal="true" aria-labelledby="v-titulo">
+  <div class="v-caja">
+    <button id="v-cerrar" aria-label="Cerrar">×</button>
+    <div class="v-izq">
+      <div id="v-tabs" hidden><button id="t-img" aria-pressed="true">Imagen</button><button id="t-vid" aria-pressed="false">Video</button></div>
+      <div id="v-medio"></div>
+    </div>
+    <div class="v-der">
+      <h2 id="v-titulo"></h2>
+      <p class="autor" id="v-autor"></p>
+      <p id="v-texto"></p>
+      <p id="v-vt" hidden></p>
+      <a id="v-yt" hidden target="_blank" rel="noopener noreferrer">¿No carga? Abrir el video en YouTube</a>
+    </div>
+  </div>
+</div>
+
+<a-scene vr-mode-ui="enabled:false" loading-screen="enabled:false" device-orientation-permission-ui="enabled:false">
+  <a-sky color="#10161a"></a-sky>
+  <a-entity id="sala"></a-entity>
+  <a-entity id="cam" camera="fov:70" look-controls="pointerLockEnabled:false" wasd-controls="acceleration:30" mover position="0 1.6 4.4"></a-entity>
+</a-scene>
+
+<script src="datos/piezas.js"></script>
+<script src="datos/imagenes.js"></script>
+<script src="datos/audio.js"></script>
+<script src="js/02-arquitectura.js"></script>
+<script src="js/03-contenido.js"></script>
+<script src="js/04-exterior.js"></script>
+<script src="js/05-interaccion.js"></script>
+
+</body>
+</html>

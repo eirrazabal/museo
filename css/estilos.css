@@ -1,0 +1,41 @@
+:root{--panel:#eef1ee;--ink:#1d2428;--muted:#56605b;--brass:#8a6a2f;--bg:#10161a;color-scheme:light dark}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--panel:#161c20;--ink:#e7ebe8;--muted:#9aa5a0;--brass:#c9a45c}}
+:root[data-theme="dark"]{--panel:#161c20;--ink:#e7ebe8;--muted:#9aa5a0;--brass:#c9a45c}
+html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);font-family:Newsreader,Georgia,serif}
+#ayuda,#cartela{position:fixed;z-index:10;box-shadow:0 0 0 1px var(--brass);background:var(--panel);color:var(--ink);border-left:4px solid var(--brass)}
+#ayuda{left:50%;top:50%;transform:translate(-50%,-50%);width:min(26rem,calc(100% - 2.5rem));padding:1.4rem 1.5rem}
+#ayuda h1{margin:0 0 .5rem;font-size:1.5rem;font-weight:600}
+#ayuda p{margin:0 0 1rem;line-height:1.5}
+#ayuda button{font:inherit;font-weight:600;padding:.55rem 1.1rem;border:0;background:var(--brass);color:#fff;cursor:pointer}
+#ayuda button:focus-visible,#avanzar:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+#cartela{left:0;right:0;bottom:0;margin:0 auto 1rem;width:min(34rem,calc(100% - 2.5rem));padding:.9rem 1.2rem;margin-bottom:calc(1rem + env(safe-area-inset-bottom,0px))}
+#cartela h2{margin:0;font-size:1.2rem;font-weight:600}
+#cartela .autor{margin:.1rem 0 .5rem;font-style:italic;color:var(--muted)}
+#cartela .texto{margin:0;line-height:1.5}
+#avanzar{display:none;position:fixed;z-index:10;right:1rem;bottom:calc(1rem + env(safe-area-inset-bottom,0px));width:5rem;height:5rem;border-radius:50%;border:3px solid var(--brass);background:var(--panel);color:var(--ink);font:600 1rem Newsreader,Georgia,serif;touch-action:none;user-select:none}
+@media (pointer:coarse){#avanzar{display:block}#cartela{margin-right:7rem;width:min(34rem,calc(100% - 9.5rem))}}
+#visor{position:fixed;inset:0;z-index:30;background:rgba(8,12,14,.86);display:grid;place-items:center;padding:max(1rem,env(safe-area-inset-top,0px)) 1rem max(1rem,env(safe-area-inset-bottom,0px))}
+.v-caja{position:relative;display:grid;gap:1rem;width:min(1100px,92vw);max-width:92vw;max-height:88vh;overflow:auto;background:var(--panel);color:var(--ink);padding:1rem;border-left:4px solid var(--brass);box-sizing:border-box}
+@media (min-width:820px){.v-caja{grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);align-items:start;padding:1.2rem}}
+#v-medio canvas{display:block;width:100%;height:auto}
+#v-medio iframe{display:block;width:100%;aspect-ratio:16/9;border:0;background:#000}
+#visor.v-juego .v-caja{width:min(780px,92vw);max-width:92vw;max-height:88vh;grid-template-columns:1fr}
+#visor.v-juego #v-medio iframe{width:100%;height:min(68vh,540px);aspect-ratio:auto}
+#visor.v-juego .v-der{display:flex;flex-wrap:wrap;align-items:baseline;justify-content:space-between;gap:.4rem 1.2rem}
+#visor.v-juego .v-der p{margin:0}
+#v-cerrar{position:absolute;top:.3rem;right:.6rem;font:400 1.9rem/1 Newsreader,Georgia,serif;background:none;border:0;color:var(--ink);cursor:pointer;z-index:2}
+#v-tabs{display:flex;gap:.5rem;margin-bottom:.6rem}
+#v-tabs button{font:inherit;padding:.3rem .9rem;border:1px solid var(--brass);background:transparent;color:var(--ink);cursor:pointer}
+#v-tabs button[aria-pressed="true"]{background:var(--brass);color:#fff}
+.v-der h2{margin:.2rem 1.8rem .1rem 0;font-size:1.4rem;font-weight:600}
+.v-der .autor{margin:0 0 .7rem;font-style:italic;color:var(--muted)}
+.v-der p{line-height:1.55;margin:.4rem 0}
+#v-yt{display:inline-block;margin-top:.4rem;color:var(--brass);font-weight:600}
+#v-cerrar:focus-visible,#v-tabs button:focus-visible,#v-yt:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+#v-medio .v-poster{position:relative;display:block}
+#v-medio .v-poster span{position:absolute;right:1rem;bottom:1rem;background:var(--brass);color:#fff;padding:.55rem 1.1rem;font-weight:600}
+#cartela .hint{margin:.45rem 0 0;font-size:.85rem;color:var(--brass)}
+#sonido{position:fixed;z-index:10;left:1rem;top:calc(1rem + env(safe-area-inset-top,0px));font:inherit;font-size:.85rem;padding:.35rem .8rem;background:var(--panel);color:var(--ink);border:1px solid var(--brass);cursor:pointer}
+#sonido:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+@media (max-width:640px){}
+[hidden]{display:none!important}
