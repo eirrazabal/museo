@@ -16,7 +16,7 @@
 <div id="ayuda" role="dialog" aria-labelledby="ayuda-t">
   <h1 id="ayuda-t" class="sr-only">Experiencia Surubí</h1>
   <img class="welcome-logo" src="assets/experiencia-color.png" alt="">
-  <p>Caminá con W A S D o con las flechas y arrastrá para mirar alrededor. Acercate a cada obra para leer su cartela y hacé clic en un cuadro para verlo en grande. La puerta de entrada lleva al balcón exterior, que rodea el museo. En el celular, mantené apretado el botón Avanzar.</p>
+  <p>Caminá con W A S D o con las flechas y arrastrá para mirar alrededor. Acercate a cada obra para leer su cartela y hacé clic en un cuadro para verlo en grande. Mirá o tocá los peces del mural para descubrir sus fichas. La puerta de entrada lleva al balcón exterior, que rodea el museo. En el celular, mantené apretado el botón Avanzar.</p>
   <p id="aviso" hidden style="color:#b3261e;font-weight:600"></p>
   <button id="entrar">Entrar a la sala</button>
 </div>
@@ -26,6 +26,7 @@
   <p class="texto" id="c-texto"></p>
   <p class="hint" id="c-hint"></p>
 </aside>
+<div id="pez-tooltip" role="status" hidden></div>
 <button id="avanzar" aria-label="Mantené apretado para avanzar">Avanzar</button>
 <button id="sonido" hidden aria-pressed="true">Sonido: sí</button>
 <div id="tiempo-ui" role="group" aria-label="Momento del día">
@@ -57,11 +58,14 @@
 <a-scene vr-mode-ui="enabled:false" loading-screen="enabled:false" device-orientation-permission-ui="enabled:false">
   <a-sky color="#10161a"></a-sky>
   <a-entity id="sala"></a-entity>
-  <a-entity id="cam" camera="fov:70" look-controls="pointerLockEnabled:false" wasd-controls="acceleration:30" mover position="0 1.6 4.4"></a-entity>
+  <a-entity id="cam" camera="fov:70" look-controls="pointerLockEnabled:false" wasd-controls="acceleration:30" mover position="0 1.6 4.4">
+    <a-entity cursor="fuse:true; fuseTimeout:1000" raycaster="objects:.pez-interactivo; far:20; interval:50"></a-entity>
+  </a-entity>
 </a-scene>
 
 <script src="datos/piezas.js"></script>
 <script src="datos/imagenes.js"></script>
+<script src="datos/peces.js"></script>
 <script src="datos/audio.js"></script>
 <script src="js/02-arquitectura.js"></script>
 <script src="js/03-contenido.js"></script>

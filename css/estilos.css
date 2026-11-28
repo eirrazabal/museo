@@ -36,6 +36,9 @@ html,body{margin:0;height:100%;overflow:hidden;background:var(--bg);font-family:
 #v-medio .v-poster{position:relative;display:block}
 #v-medio .v-poster span{position:absolute;right:1rem;bottom:1rem;background:var(--brass);color:#fff;padding:.55rem 1.1rem;font-weight:600}
 #cartela .hint{margin:.45rem 0 0;font-size:.85rem;color:var(--brass)}
+#pez-tooltip{position:fixed;z-index:18;left:50%;top:50%;transform:translate(-50%,-50%);max-width:calc(100% - 2rem);padding:.65rem 1rem;background:var(--panel);color:var(--ink);border:2px solid var(--brass);box-shadow:0 2px 12px rgba(0,0,0,.35);font:600 1rem Lato,Arial,sans-serif;text-align:center;pointer-events:none}
+#visor.v-ficha-pez #v-medio img{display:block;width:100%;height:auto;max-height:calc(88vh - 2rem);object-fit:contain}
+#visor.v-ficha-pez .v-caja{grid-template-columns:1fr;align-items:center;width:min(1100px,92vw)}
 #sonido{position:fixed;z-index:10;left:1rem;top:calc(1rem + env(safe-area-inset-top,0px));font:inherit;font-size:.85rem;padding:.35rem .8rem;background:var(--panel);color:var(--ink);border:1px solid var(--brass);cursor:pointer}
 #tiempo-ui{position:fixed;z-index:10;top:calc(1rem + env(safe-area-inset-top,0px));right:1rem;display:flex;flex-wrap:wrap;align-items:center;gap:.25rem;padding:.28rem .4rem;background:var(--panel);color:var(--ink);border:1px solid var(--brass);font-size:.78rem}
 #tiempo-reloj{padding:0 .35rem;color:var(--muted);font-variant-numeric:tabular-nums}

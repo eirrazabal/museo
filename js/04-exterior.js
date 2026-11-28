@@ -735,7 +735,7 @@ capaArb(66,JUNCOS,ARC0,ARC1,1,'#e6d6c4');
 
 /* Peces del Paraná en 3D sobre la foto del río: giran en U, se ladean al doblar y ondulan el cuerpo */
 function b64bmpT(str,t){const b=atob(str),u=new Uint8Array(b.length);for(let i=0;i<b.length;i++)u[i]=b.charCodeAt(i);return createImageBitmap(new Blob([u],{type:t}))}
-const FISH3D={};
+const FISH3D={},PECES_RIO=[];
 function construirPez3D(sp,bm){
   const T=AFRAME.THREE,w=bm.width,h=bm.height,cv=document.createElement('canvas');cv.width=w;cv.height=h;const g=cv.getContext('2d');g.drawImage(bm,0,0);
   const d=g.getImageData(0,0,w,h).data,NC=64,M=14,cw=w/NC,top=[],bot=[],cl=j=>Math.min(NC-1,Math.max(0,j));
@@ -778,7 +778,15 @@ AFRAME.registerComponent('nadar3d',{
     const ph=t/1000*(2.2+d.v*4);
     this.parts.forEach(p=>{const B=p.S.base,U=p.S.ux,pos=p.pos;for(let i=0;i<U.length;i++){const u=U[i],A=.055*Math.pow(1-u,1.5),w=2*Math.PI*(1-u)*1.1-ph;pos[i*3+2]=B[i*3+2]+A*Math.sin(w);pos[i*3+1]=B[i*3+1]+.3*A*Math.cos(w)}p.geo.attributes.position.needsUpdate=true})}
 });
-[{sp:'suru',W:2.2,y:.65,xl:-10.33,r:.55,v:.28},{sp:'dorado',W:1.3,y:1.2,xl:-10.28,r:.45,v:.5},{sp:'pacu',W:.9,y:.85,xl:-10.3,r:.5,v:.38},{sp:'boga',W:1.1,y:1.3,xl:-10.25,r:.4,v:.46},
- {sp:'dorado',W:.8,y:.55,xl:-10.32,r:.35,v:.55},{sp:'suru',W:1.3,y:1.0,xl:-10.27,r:.5,v:.3},{sp:'pacu',W:1.15,y:1.3,xl:-10.3,r:.45,v:.34},{sp:'boga',W:.65,y:.8,xl:-10.34,r:.3,v:.42}].forEach((f,i)=>{
-  const e=E('a-entity',{});e.setAttribute('nadar3d',{sp:f.sp,W:f.W,y:f.y,xl:f.xl,r:f.r,v:f.v,zmin:-4.4,zmax:3.0,fase:i/8})});
+[{sp:'suru',especie:'surubi',W:2.2,y:.65,r:.55,v:.28},{sp:'dorado',especie:'dorado',W:1.3,y:1.2,r:.45,v:.5},{sp:'pacu',especie:'pacu',W:.9,y:.85,r:.5,v:.38},{sp:'boga',especie:'boga',W:1.1,y:1.3,r:.4,v:.46},
+ {sp:'dorado',especie:'dorado',W:.8,y:.55,r:.35,v:.55},{sp:'sabalo',especie:'sabalo',W:1.3,y:1.0,r:.5,v:.3},{sp:'pacu',especie:'pacu',W:1.15,y:1.3,r:.45,v:.34},{sp:'boga',especie:'boga',W:.65,y:.8,r:.3,v:.42}].forEach((f,i)=>{
+  const e=E('a-entity',{},BANCO_PECES);e.classList.add('pez-interactivo');e.dataset.especie=f.especie;
+  e.setAttribute('nadar3d',{sp:f.sp,W:f.W,y:f.y,xl:0,r:f.r,v:f.v,zmin:-4.4,zmax:3.0,fase:i/8});
+  PECES_RIO.push({el:e,especie:f.especie})});
 Object.keys(FISH_IMG).forEach(k=>b64bmpT(FISH_IMG[k],'image/webp').then(bm=>construirPez3D(k,bm)).catch(e=>console.log('pez3d',e)));
+function cargarSpriteSabalo(){
+  const img=new Image();img.onload=()=>createImageBitmap(img).then(bm=>construirPez3D('sabalo',bm)).catch(e=>console.error('No se pudo preparar la ilustración del sábalo',e));
+  img.onerror=()=>console.error('No se pudo cargar la ilustración del sábalo',FICHAS_PECES.sabalo.sprite);
+  img.src=FICHAS_PECES.sabalo.sprite;
+}
+cargarSpriteSabalo();

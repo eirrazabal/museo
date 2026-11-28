@@ -96,3 +96,4 @@ paño(5.9,5.488,180,9.2,TINTE.s4);
 /* Pared del río: mural de pared completa (pieza 3) y peces del Paraná */
 plano({position:`-10.5 ${H/2} 0`,rotation:'0 90 0',width:11,height:H},{src:yeso('#f5f5f5'),repeat:'5.5 1.7',roughness:1});
 E('a-box',{position:'-10.47 .09 0',width:.05,height:.18,depth:11,color:'#d4d4d1'});
+const BANCO_PECES=E('a-entity',{id:'peces-rio',position:'-10.3 0 0'});

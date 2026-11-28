@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """construir.py: junta la carpeta en archivos HTML únicos, dentro de dist/ y docs/index.html para GitHub Pages."""
-import re, os, base64
+import re, os, base64, shutil
 
 base = os.path.dirname(os.path.abspath(__file__))
 
@@ -21,6 +21,15 @@ def armar(liviana):
         return '<script>\n' + leer(ruta).replace('</script', '<\\/script') + '\n</script>'
     return re.sub(r'<script src="((?:vendor|js|datos)/[^"]+)"></script>', js, h)
 
+def copiar_fichas(destino):
+    origen = os.path.join(base, 'assets', 'fichas')
+    salida = os.path.join(base, destino, 'assets', 'fichas')
+    os.makedirs(salida, exist_ok=True)
+    for nombre in os.listdir(origen):
+        archivo = os.path.join(origen, nombre)
+        if os.path.isfile(archivo):
+            shutil.copy2(archivo, os.path.join(salida, nombre))
+
 os.makedirs(os.path.join(base, 'dist'), exist_ok=True)
 os.makedirs(os.path.join(base, 'docs'), exist_ok=True)
 
@@ -37,3 +46,6 @@ for nombre, liviana in [('sala-virtual.html', False), ('sala-virtual-liviana.htm
         with open(ruta_pages, 'w', encoding='utf-8') as f:
             f.write(contenido)
         print('docs/index.html actualizado para GitHub Pages')
+    copiar_fichas('dist')
+    if not liviana:
+        copiar_fichas('docs')

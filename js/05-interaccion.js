@@ -52,7 +52,8 @@ function controles(on){['look-controls','wasd-controls'].forEach(c=>cam.setAttri
 const JUEGO_URL='https://museo.goyasurubi.com/surubi/';
 function abrirJuego(){
   abierto=true;actualVisor=-2;window.__avanzar=false;
-  visor.classList.add('v-juego');
+  visor.classList.add('v-juego');visor.classList.remove('v-ficha-pez');
+  document.querySelector('.v-der').hidden=false;
   document.getElementById('v-titulo').textContent='Vamos de pesca';
   document.getElementById('v-autor').textContent='Juego interactivo · Museo del Surubí';
   document.getElementById('v-texto').textContent='Jugá directamente desde aquí o abrí el juego en una pestaña nueva si tu navegador bloquea el marco.';
@@ -69,7 +70,8 @@ function abrirJuego(){
 }
 function abrir(i){
   const o=PIEZAS[i];abierto=true;actualVisor=i;window.__avanzar=false;
-  visor.classList.remove('v-juego');
+  visor.classList.remove('v-juego','v-ficha-pez');
+  document.querySelector('.v-der').hidden=false;
   document.getElementById('v-titulo').textContent=o.t;
   document.getElementById('v-autor').textContent=o.a;
   document.getElementById('v-texto').textContent=o.d||o.x;
@@ -78,7 +80,18 @@ function abrir(i){
   (o.v?mostrarVideo:mostrarImagen)(i);visor.hidden=false;controles(false);
   document.getElementById('v-cerrar').focus();
 }
-function cerrar(){vMedio.textContent='';visor.classList.remove('v-juego');visor.hidden=true;abierto=false;controles(true)}
+function abrirPez(especie){
+  const ficha=FICHAS_PECES[especie];if(!ficha)return;
+  abierto=true;actualVisor=-3;window.__avanzar=false;
+  visor.classList.remove('v-juego');visor.classList.add('v-ficha-pez');
+  document.querySelector('.v-der').hidden=true;
+  document.getElementById('v-titulo').textContent=ficha.nombre;
+  vTabs.hidden=true;vVt.hidden=true;vYt.hidden=true;
+  const img=document.createElement('img');img.src=ficha.imagen;img.alt='Ficha de hábitat y características del '+ficha.nombre.toLowerCase();
+  vMedio.textContent='';vMedio.appendChild(img);
+  visor.hidden=false;controles(false);document.getElementById('v-cerrar').focus();
+}
+function cerrar(){vMedio.textContent='';visor.classList.remove('v-juego','v-ficha-pez');visor.hidden=true;abierto=false;document.querySelector('.v-der').hidden=false;resaltarPez(null);controles(true)}
 document.getElementById('v-cerrar').addEventListener('click',cerrar);
 visor.addEventListener('click',e=>{if(e.target===visor)cerrar()});
 tImg.addEventListener('click',()=>mostrarImagen(actualVisor));
@@ -115,6 +128,31 @@ lista.forEach(l=>{if(l.o.e==='foto')cargarFoto(l)});
 /* Elegir el cuadro o la canoa bajo el puntero */
 const rc=new AFRAME.THREE.Raycaster(),mv=new AFRAME.THREE.Vector2();
 rc.params.Line.threshold=.06;
+let pezActivo=null;
+function resaltarPez(pez){
+  if(pezActivo===pez)return;
+  PECES_RIO.forEach(p=>{
+    const activo=p===pez,obj=p.el.object3D,mesh=p.el.getObject3D('mesh');
+    obj.scale.setScalar(activo?1.06:1);
+    if(mesh)mesh.children.forEach(m=>{if(m.material)m.material.emissiveIntensity=activo?0.85:0.55});
+  });
+  pezActivo=pez;
+  const tooltip=document.getElementById('pez-tooltip');
+  if(pez){tooltip.textContent=`Hacé clic para ver la ficha del ${FICHAS_PECES[pez.especie].nombre}`;tooltip.hidden=false}
+  else{tooltip.hidden=true;tooltip.textContent=''}
+}
+function elegirPez(cx,cy){
+  const sc=document.querySelector('a-scene');if(!sc.camera||!sc.canvas)return null;
+  const r=sc.canvas.getBoundingClientRect();
+  mv.set((cx-r.left)/r.width*2-1,-((cy-r.top)/r.height)*2+1);rc.setFromCamera(mv,sc.camera);rc.far=20;
+  let mejor=null,dm=1e9;
+  PECES_RIO.forEach(p=>{
+    const grupo=p.el.getObject3D('mesh'),cuerpo=grupo&&grupo.children[0];if(!cuerpo)return;
+    const hit=rc.intersectObject(cuerpo,false)[0];
+    if(hit&&hit.distance<dm){dm=hit.distance;mejor=p}
+  });
+  return mejor;
+}
 function elegir(cx,cy){
   const sc=document.querySelector('a-scene');if(!sc.camera||!sc.canvas)return -1;
   const r=sc.canvas.getBoundingClientRect();
@@ -132,14 +170,21 @@ document.addEventListener('pointerdown',e=>{bajada={x:e.clientX,y:e.clientY}});
 document.addEventListener('pointerup',e=>{
   if(!bajada||abierto)return;const d=Math.hypot(e.clientX-bajada.x,e.clientY-bajada.y);bajada=null;
   if(d>6||e.target.closest('#ayuda,#cartela,#avanzar,#visor,#sonido,#tiempo-ui'))return;
+  const pez=elegirPez(e.clientX,e.clientY);if(pez){abrirPez(pez.especie);return}
   const i=elegir(e.clientX,e.clientY);
   if(i>=0)abrir(i);else if(i===-2)abrirJuego();
 });
 document.addEventListener('pointermove',e=>{
   if(abierto||e.pointerType==='touch')return;const n=performance.now();if(n-tmov<90)return;tmov=n;
-  const i=elegir(e.clientX,e.clientY),sc=document.querySelector('a-scene');
-  if(sc.canvas)sc.canvas.style.cursor=i!==-1?'pointer':'';
+  const pez=elegirPez(e.clientX,e.clientY),i=pez? -1:elegir(e.clientX,e.clientY),sc=document.querySelector('a-scene');
+  resaltarPez(pez);
+  if(sc.canvas)sc.canvas.style.cursor=pez||i!==-1?'pointer':'';
   if(canoaEl&&canoaEl.components['canoa-pescador'])canoaEl.components['canoa-pescador'].hovered=(i===-2);
+});
+PECES_RIO.forEach(pez=>{
+  pez.el.addEventListener('mouseenter',()=>resaltarPez(pez));
+  pez.el.addEventListener('mouseleave',()=>resaltarPez(null));
+  pez.el.addEventListener('click',()=>{if(!abierto)abrirPez(pez.especie)});
 });
 
 /* Sonido ambiente de la fotografía: se oye más cuanto más cerca */
